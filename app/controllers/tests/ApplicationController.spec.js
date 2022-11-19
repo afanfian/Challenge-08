@@ -26,7 +26,7 @@ describe("ApplicationController", () => {
         it("should call res.status(200) and res.Json with status and message", () => {
             const mockRequest = {
                 method: "get",
-                url: "fendys.co.id",
+                url: "https://linktr.ee/afanfiann",
             };
 
             const mockResponse = {
@@ -53,7 +53,7 @@ describe("ApplicationController", () => {
         it("should call res.status(500) and res.Json with status and message", () => {
             const mockRequest = {
                 method: "get",
-                url: "fendys.co.id",
+                url: "https://linktr.ee/afanfiann",
             };
 
             const mockResponse = {

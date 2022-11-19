@@ -1,9 +1,9 @@
 const {
-  DB_USER = postgres,
-  DB_PASSWORD = afanfian14,
-  DB_NAME = railway,
-  DB_HOST = localhost,
-  DB_PORT = 5432
+  DB_USER = "postgres",
+  DB_PASSWORD = "afanfian14",
+  DB_NAME = "railway",
+  DB_HOST = "localhost",
+  DB_PORT = "5432",
 } = process.env;
 
 module.exports = {
