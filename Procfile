@@ -1,2 +1,2 @@
 web: npm start
-release: npm run db cofig
+release: npm run db:config
