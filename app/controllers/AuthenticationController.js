@@ -1,5 +1,5 @@
 const ApplicationController = require("./ApplicationController");
-const { EmailNotRegisteredError, InsufficientAccessError, RecordNotFoundError, WrongPasswordError } = require("../errors");
+const { EmailNotRegisteredError, InsufficientAccessError, NotFoundError, WrongPasswordError } = require("../errors");
 const { JWT_SIGNATURE_KEY } = require("../../config/application");
 
 class AuthenticationController extends ApplicationController {
@@ -22,7 +22,7 @@ class AuthenticationController extends ApplicationController {
     CUSTOMER: "CUSTOMER",
   }
 
-  authorize =(rolename) => {
+  authorize = (rolename) => {
     return (req, res, next) => {
       try {
         const token = req.headers.authorization?.split("Bearer ")[1];
@@ -35,7 +35,7 @@ class AuthenticationController extends ApplicationController {
         next();
       }
 
-      catch(err) {
+      catch (err) {
         res.status(401).json({
           error: {
             name: err.name,
@@ -53,7 +53,7 @@ class AuthenticationController extends ApplicationController {
       const password = req.body.password;
       const user = await this.userModel.findOne({
         where: { email, },
-        include: [{ model: this.roleModel, attributes: [ "id", "name", ], }]
+        include: [{ model: this.roleModel, attributes: ["id", "name",], }]
       });
 
       if (!user) {
@@ -77,57 +77,57 @@ class AuthenticationController extends ApplicationController {
       })
     }
 
-    catch(err) {
+    catch (err) {
       next(err);
     }
   }
 
   handleRegister = async (req, res, next) => {
-    try {
-      const name = req.body.name;
-      const email = req.body.email.toLowerCase();
-      const password = req.body.password;
-      let existingUser = await this.userModel.findOne({ where: { email, }, });
+    // try {
+    const name = req.body.name;
+    const email = req.body.email.toLowerCase();
+    const password = req.body.password;
+    let existingUser = await this.userModel.findOne({ where: { email, }, });
 
-      if (!!existingUser) {
-        const err = new EmailAlreadyTakenError(email);
-        res.status(422).json(err);
-        return;
-      }
+    // if (!!existingUser) {
+    //   const err = new EmailAlreadyTakenError(email);
+    //   res.status(422).json(err);
+    //   return;
+    // }
 
-      const role = await this.roleModel.findOne({
-        where: { name: this.accessControl.CUSTOMER }
-      });
+    const role = await this.roleModel.findOne({
+      where: { name: this.accessControl.CUSTOMER }
+    });
 
-      const user = await this.userModel.create({
-        name,
-        email,
-        encryptedPassword: this.encryptPassword(password),
-        roleId: role.id,
-      }) 
+    const user = await this.userModel.create({
+      name,
+      email,
+      encryptedPassword: this.encryptPassword(password),
+      roleId: role.id,
+    })
 
-      const accessToken = this.createTokenFromUser(user, role);
+    const accessToken = this.createTokenFromUser(user, role);
 
-      res.status(201).json({
-        accessToken,
-      })
-    }
-
-    catch(err) {
-      next(err);
-    }
+    res.status(201).json({
+      accessToken,
+    })
   }
+
+  //   // catch (err) {
+  //   //   next(err);
+  //   // }
+  // }
 
   handleGetUser = async (req, res) => {
     const user = await this.userModel.findByPk(req.user.id);
 
     if (!user) {
-      const err = new RecordNotFoundError(this.userModel.name);
+      const err = new NotFoundError(this.userModel.name);
       res.status(404).json(err)
       return;
     }
 
-    const role = await this.roleModel.findByPk(user.roleId); 
+    const role = await this.roleModel.findByPk(user.roleId);
 
     if (!role) {
       const err = new RecordNotFoundError(this.roleModel.name);
