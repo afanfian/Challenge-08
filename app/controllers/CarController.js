@@ -12,8 +12,8 @@ class CarController extends ApplicationController {
   }
 
   handleListCars = async (req, res) => {
-    const offset = this.getOffsetFromRequest(req);
-    const limit = req.query.pageSize;
+    // const offset = this.getOffsetFromRequest(req);
+    // const limit = req.query.pageSize;
     const query = this.getListQueryFromRequest(req);
     const cars = await this.carModel.findAll(query);
     const carCount = await this.carModel.count({ where: query.where, include: query.include, });
@@ -98,7 +98,7 @@ class CarController extends ApplicationController {
       next(err);
     }
   };
-
+  //
   handleUpdateCar = async (req, res) => {
     try {
       const {
@@ -116,8 +116,8 @@ class CarController extends ApplicationController {
         size,
         image,
         isCurrentlyRented: false,
-      });
-      res.status(200).json(car);
+      }, { where: { id: car.id } });
+      // res.status(200).json(car);
     } catch (err) {
       res.status(422).json({
         error: {
@@ -127,7 +127,7 @@ class CarController extends ApplicationController {
       });
     }
   };
-
+  //
   handleDeleteCar = async (req, res) => {
     const car = await this.carModel.findByPk(req.params.id);
     if (car) {
