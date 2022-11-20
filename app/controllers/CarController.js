@@ -98,7 +98,7 @@ class CarController extends ApplicationController {
       next(err);
     }
   };
-  //
+
   handleUpdateCar = async (req, res) => {
     try {
       const {
@@ -117,6 +117,8 @@ class CarController extends ApplicationController {
         image,
         isCurrentlyRented: false,
       }, { where: { id: car.id } });
+      const updatedCar = await this.getCarFromRequest(req);
+      res.status(200).json(updatedCar);
       // res.status(200).json(car);
     } catch (err) {
       res.status(422).json({
