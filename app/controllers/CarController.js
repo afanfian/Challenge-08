@@ -133,6 +133,7 @@ class CarController extends ApplicationController {
   handleDeleteCar = async (req, res) => {
     const car = await this.carModel.findByPk(req.params.id);
     if (car) {
+      car.destroy({ truncate: true });
       res.status(204).end();
     } else {
       res.status(404).end();
